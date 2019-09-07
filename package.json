@@ -5,6 +5,9 @@
   "repository": "https://github.com/pradella/gostack-gobarber.git",
   "author": "Mauricio Pradella <pradella@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
   "dependencies": {
     "express": "^4.17.1",
     "pg": "^7.12.1",
