@@ -41,6 +41,8 @@ class UserController {
 
     // PUT
     async update(req, res) {
+        const { email, oldPassword } = req.body;
+
         // check input data
         if (!await this.isValid(req)) {
             return error(res, 400, 'Validation failed');
@@ -51,9 +53,14 @@ class UserController {
         if (!targetUser) return error(res, 400, 'User does not exists');
 
         // check if is trying to change email to an existing email
-        if (req.body.email !== targetUser.email) {
-            const emailExists = await User.findOne({ where: { email: req.body.email } });
+        if (email !== targetUser.email) {
+            const emailExists = await User.findOne({ where: { email } });
             if (emailExists) return error(res, 400, 'Email already exists');
+        }
+
+        // check if old password informed matches with saved password
+        if (oldPassword && !await targetUser.checkPassword(oldPassword)) {
+            return error(res, 401, 'Password does not match');
         }
 
         // update
@@ -73,7 +80,7 @@ class UserController {
         const schema = Yup.object().shape({
             name: Yup.string().required(),
             email: Yup.string().required(),
-            password_hash: Yup.string().required().min(4),
+            password: Yup.string().required().min(4),
         });
         return schema.isValid(req.body);
     }
