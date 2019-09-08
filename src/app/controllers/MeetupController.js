@@ -61,7 +61,7 @@ class MeetupController {
         }
 
         // check if logged user is the owner
-        if (targetMeetup.owner !== req.loggedUserId) {
+        if (targetMeetup.user_id !== req.loggedUserId) {
             return error(res, 400, 'Cannot update meetup: you are not the owner');
         }
 
@@ -84,7 +84,7 @@ class MeetupController {
             description: Yup.string().required(),
             location: Yup.string().required(),
             date: Yup.date().required(),
-            owner: Yup.number().required(),
+            user_id: Yup.number().required(),
         });
         return schema.isValid(req.body);
     }

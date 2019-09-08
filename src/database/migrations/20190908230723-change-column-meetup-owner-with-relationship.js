@@ -1,7 +1,7 @@
 
 module.exports = {
     up: (queryInterface, Sequelize) => queryInterface.changeColumn(
-        'meetups', 'owner', {
+        'meetups', 'user_id', {
             type: Sequelize.INTEGER,
             allowNull: false,
             references: { model: 'users', key: 'id' },
@@ -11,7 +11,7 @@ module.exports = {
     ),
 
     down: (queryInterface, Sequelize) => queryInterface.changeColumn(
-        'meetups', 'owner', {
+        'meetups', 'user_id', {
             type: Sequelize.INTEGER,
             allowNull: false,
         },

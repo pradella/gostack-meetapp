@@ -28,7 +28,7 @@ class RegistrationController {
         if (!desiredMeetup) return error(res, 400, 'Meetup does not exist');
 
         // O usuário deve poder se inscrever em meetups que não organiza.
-        if (desiredMeetup.owner === loggedUserId) {
+        if (desiredMeetup.user_id === loggedUserId) {
             return error(res, 400, 'You cannot register in meetups that you are the owner');
         }
 

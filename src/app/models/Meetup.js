@@ -7,14 +7,15 @@ class Meetup extends Model {
             description: Sequelize.STRING,
             location: Sequelize.STRING,
             date: Sequelize.DATE,
-            owner: Sequelize.INTEGER,
+            user_id: Sequelize.INTEGER,
         }, { sequelize });
 
         return this;
     }
 
     static associate(models) {
-        this.belongsTo(models.User, { foreignKey: 'owner' });
+        this.hasMany(models.Registration, { foreignKey: 'meetup_id' });
+        this.belongsTo(models.User, { foreignKey: 'user_id' });
     }
 }
 

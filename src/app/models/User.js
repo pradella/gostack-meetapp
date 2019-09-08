@@ -20,6 +20,11 @@ class User extends Model {
         return this;
     }
 
+    static associate(models) {
+        this.hasMany(models.Meetup);
+        this.hasMany(models.Registration);
+    }
+
     checkPassword(oldPassword) {
         return bcrypt.compare(oldPassword, this.password_hash);
     }

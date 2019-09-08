@@ -23,7 +23,7 @@ module.exports = {
             type: Sequelize.DATE,
             allowNull: false,
         },
-        owner: {
+        user_id: {
             type: Sequelize.INTEGER,
             allowNull: false,
         },
