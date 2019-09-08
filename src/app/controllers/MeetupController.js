@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { isBefore, parseISO } from 'date-fns';
 import error from '../../utils';
 import Meetup from '../models/Meetup';
 
@@ -29,7 +30,9 @@ class MeetupController {
         }
 
         // check if meetup date is future date
-
+        if (isBefore(parseISO(req.body.date), new Date())) {
+            return error(res, 400, 'Cannot create meetup with past dates');
+        }
 
         // insert
         const meetupCreated = await Meetup.create(req.body);
@@ -48,10 +51,19 @@ class MeetupController {
         if (!targetMeetup) return error(res, 400, 'Meetup does not exists');
 
         // check if meetup has not passed
+        if (isBefore(parseISO(targetMeetup.date), new Date())) {
+            return error(res, 400, 'Cannot update past meetups');
+        }
 
+        // check if new meetup date is future date
+        if (isBefore(parseISO(req.body.date), new Date())) {
+            return error(res, 400, 'Cannot update meetup with past dates');
+        }
 
         // check if logged user is the owner
-
+        if (targetMeetup.owner !== req.loggedUserId) {
+            return error(res, 400, 'Cannot update meetup: you are not the owner');
+        }
 
         // update
         const meetupUpdated = await targetMeetup.update(req.body);
