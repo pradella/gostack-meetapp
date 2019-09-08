@@ -2,8 +2,23 @@ import { isBefore, parseISO } from 'date-fns';
 import error from '../../utils';
 import Register from '../models/Register';
 import Meetup from '../models/Meetup';
+import User from '../models/User';
 
 class RegisterController {
+    // GET
+    async index(req, res) {
+        const allRegistrations = await Register.findAll({
+            include: [{
+                model: Meetup,
+                required: true,
+            }, {
+                model: User,
+                required: true,
+            }],
+        });
+        return res.json(allRegistrations);
+    }
+
     // POST
     async store(req, res) {
         // get the meetup
@@ -31,12 +46,28 @@ class RegisterController {
         }
 
         // O usuário não pode se inscrever em dois meetups que acontecem no mesmo horário.
-        // PENDING...
+        const hasRegistrationOnSameDate = await Register.findOne({
+            where: { user_id: loggedUserId },
+            include: [{
+                model: Meetup,
+                required: true,
+                where: {
+                    date: desiredMeetup.date,
+                },
+            }],
+        });
+        if (hasRegistrationOnSameDate) {
+            return error(res, 400, 'You cannot register in two meetups at the same time');
+        }
 
         // insert
         const registerCreated = await Register.create({
             meetup_id: meetupId, user_id: loggedUserId,
         });
+
+        // send notification email
+        // PENDING
+
         return res.json(registerCreated);
     }
 
