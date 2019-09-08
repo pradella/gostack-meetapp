@@ -1,13 +1,13 @@
 import { isBefore, parseISO } from 'date-fns';
 import error from '../../utils';
-import Register from '../models/Register';
+import Registration from '../models/Registration';
 import Meetup from '../models/Meetup';
 import User from '../models/User';
 
-class RegisterController {
+class RegistrationController {
     // GET
     async index(req, res) {
-        const allRegistrations = await Register.findAll({
+        const allRegistrations = await Registration.findAll({
             include: [{
                 model: Meetup,
                 required: true,
@@ -38,7 +38,7 @@ class RegisterController {
         }
 
         // O usuário não pode se inscrever no mesmo meetup duas vezes.
-        const hasAlreadyRegistered = await Register.findOne({
+        const hasAlreadyRegistered = await Registration.findOne({
             where: { meetup_id: meetupId },
         });
         if (hasAlreadyRegistered) {
@@ -46,7 +46,7 @@ class RegisterController {
         }
 
         // O usuário não pode se inscrever em dois meetups que acontecem no mesmo horário.
-        const hasRegistrationOnSameDate = await Register.findOne({
+        const hasRegistrationOnSameDate = await Registration.findOne({
             where: { user_id: loggedUserId },
             include: [{
                 model: Meetup,
@@ -61,7 +61,7 @@ class RegisterController {
         }
 
         // insert
-        const registerCreated = await Register.create({
+        const registerCreated = await Registration.create({
             meetup_id: meetupId, user_id: loggedUserId,
         });
 
@@ -75,7 +75,7 @@ class RegisterController {
     async delete(req, res) {
         const meetupId = req.params.id;
         const { loggedUserId } = req;
-        const deleteCount = await Register.destroy({
+        const deleteCount = await Registration.destroy({
             where: { meetup_id: meetupId, user_id: loggedUserId },
         });
         if (deleteCount === 0) return error(res, 400, 'Cannot delete meetup registration: seems this meetup does not exists');
@@ -83,4 +83,4 @@ class RegisterController {
     }
 }
 
-export default new RegisterController();
+export default new RegistrationController();

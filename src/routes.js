@@ -3,7 +3,7 @@ import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
 import authMiddleware from './app/middlewares/auth';
 import MeetupController from './app/controllers/MeetupController';
-import RegisterController from './app/controllers/RegisterController';
+import RegistrationController from './app/controllers/RegistrationController';
 
 const routes = new Router();
 
@@ -27,8 +27,8 @@ routes.put('/meetups/:id', MeetupController.update);
 routes.delete('/meetups/:id', MeetupController.delete);
 
 // register
-routes.get('/register/', RegisterController.index);
-routes.post('/register/:id', RegisterController.store);
-routes.delete('/register/:id', RegisterController.delete);
+routes.get('/register/', RegistrationController.index);
+routes.post('/register/:id', RegistrationController.store);
+routes.delete('/register/:id', RegistrationController.delete);
 
 export default routes;
