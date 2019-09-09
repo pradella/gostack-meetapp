@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 import { isBefore, parseISO } from 'date-fns';
 import error from '../../utils';
 import Meetup from '../models/Meetup';
+import File from '../models/File';
 
 class MeetupController {
     constructor() {
@@ -11,13 +12,16 @@ class MeetupController {
 
     // INDEX
     async index(req, res) {
-        const allMeetups = await Meetup.findAll();
+        const allMeetups = await Meetup.findAll({ include: [File] });
         return res.json(allMeetups);
     }
 
     // GET
     async get(req, res) {
-        const oneMeetup = await Meetup.findByPk(req.params.id);
+        const oneMeetup = await Meetup.findAll({
+            where: { id: req.params.id },
+            include: [File],
+        });
         if (!oneMeetup) return error(res, 400, 'Meetup does not exist');
         return res.json(oneMeetup);
     }
@@ -85,6 +89,7 @@ class MeetupController {
             location: Yup.string().required(),
             date: Yup.date().required(),
             user_id: Yup.number().required(),
+            file_id: Yup.number().required(),
         });
         return schema.isValid(req.body);
     }
