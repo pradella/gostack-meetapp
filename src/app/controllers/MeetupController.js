@@ -89,7 +89,7 @@ class MeetupController {
             location: Yup.string().required(),
             date: Yup.date().required(),
             user_id: Yup.number().required(),
-            file_id: Yup.number().required(),
+            file_id: Yup.number(),
         });
         return schema.isValid(req.body);
     }
